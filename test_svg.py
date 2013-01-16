@@ -6,8 +6,6 @@ import pysvg.builders
 import pysvg.text
 
 
-import svgwrite
-
 
 def test_pysvg():
     svg = pysvg.structure.Svg()

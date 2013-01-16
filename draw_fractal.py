@@ -1,9 +1,17 @@
-from pyprocessing import *
+#from pyprocessing import *
 import random
 from levy import sierpinski, sierpinski_number, generate_levy_c_curve_grammar, koch_curve, sierpinski_triangle_string
 import math
 
-import svgwrite
+#import svgwrite
+
+
+import pysvg.structure
+import pysvg.builders
+import pysvg.text
+
+
+
 
 XSIZE = 800
 YSIZE = 800
@@ -56,14 +64,21 @@ class SVGTurtle(Turtle):
 
     def __init__(self, fn):
         super(SVGTurtle, self).__init__()
-        self.drawing = svgwrite.Drawing(fn, profile='tiny')
+        #self.drawing = svgwrite.Drawing(fn, profile='tiny')
+
+        self.drawing = pysvg.structure.Svg()
+
+        self._fn = fn
+        self._builder = pysvg.builders.ShapeBuilder()
 
     def save(self):
-        self.drawing.save()
+        #self.drawing.save()
+        self.drawing.save(self._fn)
         
 
     def draw_line(self, p0, p1):
-        self.drawing.add(self.drawing.line(p0, p1, stroke=svgwrite.rgb(255, 0, 0, '%')))
+        #self.drawing.add(self.drawing.line(p0, p1, stroke=svgwrite.rgb(255, 0, 0, '%')))
+        self.drawing.addElement(self._builder.createLine(p0[0], p0[1], p1[0], p1[1], strokewidth=1, stroke='black'))
 
 
 
@@ -151,7 +166,7 @@ def draw():
     #draw_sierpinski_points(px)
     #line(0, 0, 500, 500)
 
-    t = Turtle()
+    t = SVGTurtle('sierpinski.svg')
 
     #t.right(150)
     #t.forward(300, draw=False)
@@ -161,10 +176,11 @@ def draw():
     t.right(140)
     t.forward(400, draw=False)
 
-
-    sts = sierpinski_triangle_string(steps=10)
+    sts = sierpinski_triangle_string(steps=5)
     #print sts
     process_sierpinski_string(sts, t, step=1)
+
+    t.save()
 
     #steps = random.choice(range(0, 15))
     #print steps
@@ -178,8 +194,9 @@ def draw():
     #fn = "images/trees/%s.png" % str(random.random())[2:]
     #get().save(fn)
 
-run()
+#run()
 
 
-#if __name__ == "__main__":
+if __name__ == "__main__":
+    draw()
 
