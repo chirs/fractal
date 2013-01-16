@@ -1,29 +1,30 @@
+
 #from pyprocessing import *
 import random
-from levy import sierpinski, sierpinski_number, generate_levy_c_curve_grammar, koch_curve, sierpinski_triangle_string
+from lsystem import generate_levy_c_curve_grammar, koch_curve_string, sierpinski_triangle_string
 import math
 
 #import svgwrite
-
-
 import pysvg.structure
 import pysvg.builders
 import pysvg.text
 
 
+# Machinery for actually drawing images.
 
-
+"""
 XSIZE = 800
 YSIZE = 800
-
 
 def setup():
     size(XSIZE, YSIZE)
     frameRate(1)
     background(255)
-
+"""
 
 class Turtle(object):
+    # A classic logo-style turtle.
+    # Response to forward(10, draw=True) and right/left(45)
 
     def __init__(self):
         self.coordinates = (0, 0)
@@ -61,6 +62,9 @@ class Turtle(object):
 
 class SVGTurtle(Turtle):
 
+    # A turtle that creates an svg. Currently only creates lines.
+    # Have to call save().
+
 
     def __init__(self, fn):
         super(SVGTurtle, self).__init__()
@@ -82,33 +86,7 @@ class SVGTurtle(Turtle):
 
 
 
-
-def draw_sierpinski():
-    for triangles in sierpinski():
-        #if random.random() > .75:
-        if random.random() > .1:
-            return
-        
-        print triangles
-        time.sleep(2)
-        background(255)
-        for a,b,c in triangles:
-            draw_triangle(a,b,c)
-
-
-def draw_triangle(a,b,c):
-    print "drawing"
-    for (p1, p2) in [(a,b), (a,c), (b,c)]:
-        x1, y1 = [XSIZE * e for e in p1]
-        x2, y2 = [YSIZE * e for e in p2]
-        print x1, y1, x2, y2
-        line(x1, y1, x2, y2)
-
-
-def draw_sierpinski_points(triangles):
-    for a,b,c in triangles:
-        draw_triangle(a,b,c)
-
+# Alphabet processing functions.
 
 def process_levy_string(s, turtle):
     for char in s:
@@ -122,9 +100,7 @@ def process_levy_string(s, turtle):
             import pdb; pdb.set_trace()
 
 
-
-
-def read_cantor(s, a, b):
+def process_cantor_string(s, a, b):
     distance = get_distance(a, b)
     step_length = len(s) / float(distance)
     lines = []
@@ -166,25 +142,34 @@ def draw():
     #draw_sierpinski_points(px)
     #line(0, 0, 500, 500)
 
-    t = SVGTurtle('sierpinski.svg')
+    #t = SVGTurtle('sierpinski.svg')
+
 
     #t.right(150)
     #t.forward(300, draw=False)
-    #kc = koch_curve(steps=8)
+    #kc = koch_curve_string(steps=8)
     #process_koch_string(kc, t, step=.02)
 
-    t.right(140)
-    t.forward(400, draw=False)
+    #t.right(140)
+    #t.forward(400, draw=False)
 
-    sts = sierpinski_triangle_string(steps=5)
+    #sts = sierpinski_triangle_string(steps=5)
     #print sts
-    process_sierpinski_string(sts, t, step=1)
+    #process_sierpinski_string(sts, t, step=1)
 
-    t.save()
+    #t.save()
 
+    t = SVGTurtle('levy.svg')
     #steps = random.choice(range(0, 15))
     #print steps
-    #s = generate_levy_c_curve_grammar(steps=steps)
+    t.right(150)
+    t.forward(300, draw=False)
+
+    steps = 12
+    s = generate_levy_c_curve_grammar(steps=steps)
+    process_levy_string(s, t)
+    t.save()
+    
     #process_levy_string(s, t)
     #t.right(30)
     #t.forward(200)
@@ -195,6 +180,40 @@ def draw():
     #get().save(fn)
 
 #run()
+
+
+
+# Old drawing methods.
+"""
+from lsystem import sierpinski
+def draw_sierpinski():
+    for triangles in sierpinski():
+        #if random.random() > .75:
+        if random.random() > .1:
+            return
+        
+        print triangles
+        time.sleep(2)
+        background(255)
+        for a,b,c in triangles:
+            draw_triangle(a,b,c)
+
+
+def draw_triangle(a,b,c):
+    print "drawing"
+    for (p1, p2) in [(a,b), (a,c), (b,c)]:
+        x1, y1 = [XSIZE * e for e in p1]
+        x2, y2 = [YSIZE * e for e in p2]
+        print x1, y1, x2, y2
+        line(x1, y1, x2, y2)
+
+
+def draw_sierpinski_points(triangles):
+    for a,b,c in triangles:
+        draw_triangle(a,b,c)
+"""
+
+
 
 
 if __name__ == "__main__":

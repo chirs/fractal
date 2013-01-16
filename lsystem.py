@@ -3,7 +3,8 @@ import math
 import time
 import itertools
 
-# Abstract implementation of Levy C curve - a fractal.
+# Working implementation Lindenmayer system fractals - generated using a rewriting system, which include
+# Levy C Curve, Koch Curve, Sierpinski Triangle, Cantos Dust; also model biological systems particularly well.
 
 
 def get_midpoint(a, b):
@@ -13,7 +14,7 @@ def get_distance(a, b):
     return math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)
 
 
-def koch_curve(steps=0):
+def koch_curve_string(steps=0):
     # A standard triangular koch curve.
 
     def step(s):
@@ -26,8 +27,6 @@ def koch_curve(steps=0):
 
         return s2
 
-        
-
     s = 'allalla'
     
     i = 0
@@ -39,6 +38,8 @@ def koch_curve(steps=0):
         i += 1
 
 def sierpinski_triangle_string(steps=0):
+    # Sierpinski Triangle
+
     def step(s):
         s2 = ''
         for c in s:
@@ -86,8 +87,7 @@ def generate_levy_c_curve_grammar(steps=0):
     
     
 
-def cantor_dust_alphabet(steps=0):
-
+def cantor_dust_string(steps=0):
 
     def dust_step(s):
         s2 = ''
@@ -111,13 +111,10 @@ def cantor_dust_alphabet(steps=0):
 
 
 
+"""
+# Separate?
 
-def sierpinski_number(i):
-    for ix, e in enumerate(sierpinski()):
-        if i == ix: 
-            return e
-
-def sierpinski():
+def sierpinski_old():
     a, b, c =(0, 0), (1, 0), (.5, math.sqrt(3) / math.sqrt(2))
     triangles = [(a,b,c)]
 
@@ -135,6 +132,7 @@ def sierpinski():
 
 
 def sierpinski_dissect(points):
+    # Given three points, cut into four triangles a la Sierpinski's triangle
     a, b, c = points
     abm, bcm, cam = [get_midpoint(*e) for e in [(a,b), (b,c), (c,a)]]
     return [
@@ -143,14 +141,7 @@ def sierpinski_dissect(points):
         (c, bcm, cam),
         ]
     
-
-
-
-
-
-
-
-        
+# Original levy generation method.
 def levy():
     points = (a, b)
     while True:
@@ -189,15 +180,11 @@ def levy_step(points):
     return new_points
 
 
-
+"""
     
     
         
 if __name__ == "__main__":
-    print koch_curve(2)
-    #print koch_curve(10)
-    #for e in sierpinski():
-    #    print e
-        
+    pass
         
     
