@@ -151,8 +151,21 @@ def process_sierpinski_string(s, turtle, step=5):
 
 
 def process_binary(s, turtle):
-    pass
-            
+    turtles = [turtle]
+    for char in s:
+        if char == '[':
+            t = turtle.copy()
+            turtles.append(t)
+            turtle = t
+        elif char == ']':
+            turtles.pop()
+            turtle = turtles[-1]
+
+        elif char in '01':
+            turtle.forward(5)
+
+        else:
+            import pdb; pdb.set_trace()
                             
 
 
