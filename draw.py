@@ -22,14 +22,25 @@ def setup():
     background(255)
 """
 
+# Use pysvg Turtle object instead?
 class Turtle(object):
     # A classic logo-style turtle.
     # Response to forward(10, draw=True) and right/left(45)
 
-    def __init__(self):
-        self.coordinates = (0, 0)
-        self.degrees = 0
-        self.orientation = math.pi
+    def __init__(self, coordinates=None, degrees=None):
+        if self.coordinates is None:
+            self.coordinates = (0, 0)
+        else:
+            self.coordinates = coordinates
+
+        if self.degrees is None: 
+            self.degrees = 0
+            self.orientation = math.pi
+
+        else:
+            self.degrees = degrees
+            self.orientation = math.pi - (degrees * math.pi / 180)
+
 
     def left(self, degrees):
         self.degrees += degrees
@@ -66,8 +77,10 @@ class SVGTurtle(Turtle):
     # Have to call save().
 
 
-    def __init__(self, fn):
+    def __init__(self, fn=None, drawing=None):
         super(SVGTurtle, self).__init__()
+        
+        assert fn or drawing
         #self.drawing = svgwrite.Drawing(fn, profile='tiny')
 
         self.drawing = pysvg.structure.Svg()
@@ -89,13 +102,16 @@ class SVGTurtle(Turtle):
 # Alphabet processing functions.
 
 def process_levy_string(s, turtle):
+
+    distance = 30 * (1 / math.log(len(s), 2))
+
     for char in s:
         if char == '+': 
             turtle.right(45)
         elif char == '-':
             turtle.left(45)
         elif char == 'f':
-            turtle.forward(5)
+            turtle.forward(distance)
         else:
             import pdb; pdb.set_trace()
 
@@ -167,11 +183,13 @@ def draw():
     t = SVGTurtle('levy.svg')
     #steps = random.choice(range(0, 15))
     #print steps
-    t.right(150)
-    t.forward(300, draw=False)
 
-    steps = 12
-    s = generate_levy_c_curve_grammar(steps=steps)
+    t.right(150)
+    t.forward(550, draw=False)
+    t.left(150)
+    
+
+    s = generate_levy_c_curve_grammar(steps=16)
     process_levy_string(s, t)
     t.save()
     
@@ -186,37 +204,6 @@ def draw():
 
 #run()
 
-
-
-# Old drawing methods.
-"""
-from lsystem import sierpinski
-def draw_sierpinski():
-    for triangles in sierpinski():
-        #if random.random() > .75:
-        if random.random() > .1:
-            return
-        
-        print triangles
-        time.sleep(2)
-        background(255)
-        for a,b,c in triangles:
-            draw_triangle(a,b,c)
-
-
-def draw_triangle(a,b,c):
-    print "drawing"
-    for (p1, p2) in [(a,b), (a,c), (b,c)]:
-        x1, y1 = [XSIZE * e for e in p1]
-        x2, y2 = [YSIZE * e for e in p2]
-        print x1, y1, x2, y2
-        line(x1, y1, x2, y2)
-
-
-def draw_sierpinski_points(triangles):
-    for a,b,c in triangles:
-        draw_triangle(a,b,c)
-"""
 
 
 
