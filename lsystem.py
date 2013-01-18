@@ -7,12 +7,6 @@ import itertools
 # Levy C Curve, Koch Curve, Sierpinski Triangle, Cantos Dust; also model biological systems particularly well.
 
 
-def get_midpoint(a, b):
-    return (a[0] + b[0]) / 2.0, (a[1] + b[1]) / 2.0
-
-def get_distance(a, b):
-    return math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2)
-
 
 def koch_curve_string(steps=0):
     # A standard triangular koch curve.
