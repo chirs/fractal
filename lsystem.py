@@ -7,7 +7,45 @@ import itertools
 # Levy C Curve, Koch Curve, Sierpinski Triangle, Cantos Dust; also model biological systems particularly well.
 
 
+def generic_lsystem(start, fn):
 
+    s = start
+    for e in itertools.count():
+        yield s
+        s = fn(s)
+
+
+def koch_curve2():
+    
+    def step(s):
+        s2 = ''
+        for c in s:
+            if c == 'a':
+                s2 += 'arallara'
+            else:
+                s2 += c
+
+        return s2
+
+    return generic_lsystem('allalla', step)
+
+def sierpinski2():
+    def step(s):
+        s2 = ''
+        for c in s:
+            if c == 'a':
+                s2 += 'b-a-b'
+            elif c == 'b':
+                s2 += 'a+b+a'
+            else:
+                s2 += c
+
+        return s2
+
+    return generic_lsystem('a', step)
+
+
+"""
 def koch_curve_string(steps=0):
     # A standard triangular koch curve.
 
@@ -33,7 +71,6 @@ def koch_curve_string(steps=0):
 
 def sierpinski_triangle_string(steps=0):
     # Sierpinski Triangle
-
     def step(s):
         s2 = ''
         for c in s:
@@ -46,6 +83,7 @@ def sierpinski_triangle_string(steps=0):
 
         return s2
 
+
     s = 'a'
     i = 0
     while True:
@@ -54,7 +92,7 @@ def sierpinski_triangle_string(steps=0):
 
         s = step(s)
         i += 1
-
+"""
 
 def binary_tree(steps=0):
     
@@ -66,7 +104,7 @@ def binary_tree(steps=0):
             elif char == '0':
                 s2 += '1[0]0'
             else:
-                s2 += 'char'
+                s2 += char
 
         return s2
 
@@ -129,6 +167,6 @@ def cantor_dust_string(steps=0):
 
 
 if __name__ == "__main__":
-    pass
+    print binary_tree(8)
         
     

@@ -1,7 +1,7 @@
 
 #from pyprocessing import *
 import random
-from lsystem import generate_levy_c_curve_grammar, koch_curve_string, sierpinski_triangle_string
+from lsystem import generate_levy_c_curve_grammar, koch_curve2, sierpinski2, binary_tree
 import math
 
 #import svgwrite
@@ -28,18 +28,22 @@ class Turtle(object):
     # Response to forward(10, draw=True) and right/left(45)
 
     def __init__(self, coordinates=None, degrees=None):
-        if self.coordinates is None:
+        if coordinates is None:
             self.coordinates = (0, 0)
         else:
             self.coordinates = coordinates
 
-        if self.degrees is None: 
+        if degrees is None: 
             self.degrees = 0
             self.orientation = math.pi
 
         else:
             self.degrees = degrees
             self.orientation = math.pi - (degrees * math.pi / 180)
+
+
+    def copy(self):
+        return Turtle(self.coordinates, self.degrees)
 
 
     def left(self, degrees):
@@ -77,16 +81,24 @@ class SVGTurtle(Turtle):
     # Have to call save().
 
 
-    def __init__(self, fn=None, drawing=None):
+    def __init__(self, coordinates=None, degrees=None, fn=None, drawing=None):
         super(SVGTurtle, self).__init__()
         
         assert fn or drawing
         #self.drawing = svgwrite.Drawing(fn, profile='tiny')
 
-        self.drawing = pysvg.structure.Svg()
+        if drawing:
+            self.drawing = drawing
+        else:
+            self.drawing = pysvg.structure.Svg()
 
         self._fn = fn
         self._builder = pysvg.builders.ShapeBuilder()
+
+
+    def copy(self):
+        return SVGTurtle(self.coordinates, self.degrees, fn=self._fn, drawing=self.drawing)
+        
 
     def save(self):
         #self.drawing.save()
@@ -152,14 +164,19 @@ def process_sierpinski_string(s, turtle, step=5):
 
 def process_binary(s, turtle):
     turtles = [turtle]
-    for char in s:
+    for char in s: 
         if char == '[':
             t = turtle.copy()
             turtles.append(t)
+
             turtle = t
+            turtle.left(45)
+
         elif char == ']':
             turtles.pop()
+
             turtle = turtles[-1]
+            turtle.right(45)
 
         elif char in '01':
             turtle.forward(5)
@@ -193,17 +210,19 @@ def draw():
 
     #t.save()
 
-    t = SVGTurtle('levy.svg')
+
     #steps = random.choice(range(0, 15))
     #print steps
 
+
+    t = SVGTurtle(fn='binary.svg')
     t.right(150)
     t.forward(550, draw=False)
     t.left(150)
-    
-
-    s = generate_levy_c_curve_grammar(steps=16)
-    process_levy_string(s, t)
+    #s = generate_levy_c_curve_grammar(steps=16)
+    s = binary_tree(steps=7)
+    print s
+    process_binary(s, t)
     t.save()
     
     #process_levy_string(s, t)
