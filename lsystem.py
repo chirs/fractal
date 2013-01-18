@@ -60,6 +60,30 @@ def sierpinski_triangle_string(steps=0):
 
         s = step(s)
         i += 1
+
+
+def binary_tree(steps=0):
+    
+    def process_string(s):
+        s2 = ''
+        for char in s:
+            if char == '1':
+                s2 += '11'
+            elif char == '0':
+                s2 += '1[0]0'
+            else:
+                s2 += 'char'
+
+        return s2
+
+    s = '0'
+    i = 0
+    while True:
+        if steps == i:
+            return s
+        
+        i += 1
+        s = process_string(s)
                 
 
 

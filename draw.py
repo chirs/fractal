@@ -131,6 +131,11 @@ def process_sierpinski_string(s, turtle, step=5):
             turtle.right(60)
         else:
             turtle.forward(step)
+
+
+
+def process_binary(s, turtle):
+    pass
             
                             
 
