@@ -1,0 +1,5 @@
+1. Add fractal plant.
+2. Implement binary tree display / turtle copying.
+3. Add copy to turtle.
+4. Create generic lindenmayer system function.
+5. Automatically resize lsystem drawings in svg?
