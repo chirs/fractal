@@ -1,3 +1,5 @@
+# Experiments with svg.
+
 import svgwrite
 
 

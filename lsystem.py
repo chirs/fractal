@@ -6,13 +6,25 @@ import itertools
 # Working implementation Lindenmayer system fractals - generated using a rewriting system, which include
 # Levy C Curve, Koch Curve, Sierpinski Triangle, Cantos Dust; also model biological systems particularly well.
 
-
-def generic_lsystem(start, fn):
-
+def generic_lsystem(start, fn, ):
+    """
+    Generate arbitrarily long l systems.
+    """
     s = start
     for e in itertools.count():
         yield s
         s = fn(s)
+
+
+def lsystem_string(generator, depth):
+# def lsystem_string(generator, depth):
+    """
+    Extract a string from lsystem generator.
+    """
+
+    for e in range(depth):
+        _ = generator.next()
+    return _
 
 
 def koch_curve2():
@@ -28,6 +40,7 @@ def koch_curve2():
         return s2
 
     return generic_lsystem('allalla', step)
+
 
 def sierpinski2():
     def step(s):
@@ -167,6 +180,7 @@ def cantor_dust_string(steps=0):
 
 
 if __name__ == "__main__":
-    print binary_tree(8)
+    #print(binary_tree(8))
+    print(lsystem_string(koch_curve2(), 5))
         
     

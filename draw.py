@@ -1,16 +1,20 @@
+#!/usr/bin/env python
 
-#from pyprocessing import *
 import random
-from lsystem import generate_levy_c_curve_grammar, koch_curve2, sierpinski2, binary_tree
 import math
 
+#import pysvg.structure
+#import pysvg.builders
+#import pysvg.text
+#from pyprocessing import *
 #import svgwrite
-import pysvg.structure
-import pysvg.builders
-import pysvg.text
+
+from lsystem import ultra, generate_levy_c_curve_grammar, koch_curve2, sierpinski2, binary_tree
 
 
 # Machinery for actually drawing images.
+# Includes an Abstract Turtle, an SVG turtle, ...
+# needs to handle three dimensions
 
 """
 XSIZE = 800
@@ -22,17 +26,21 @@ def setup():
     background(255)
 """
 
-# Use pysvg Turtle object instead?
+
 class Turtle(object):
-    # A classic logo-style turtle.
-    # Response to forward(10, draw=True) and right/left(45)
+    """
+    A classic logo-style turtle.
+    Response to forward(10, draw=True) and right/left(45)
+    """
+    # Use pysvg Turtle object instead?
 
     def __init__(self, coordinates=None, degrees=None):
         if coordinates is None:
-            self.coordinates = (0, 0)
+            self.coordinates = (0, 0, 0)
         else:
             self.coordinates = coordinates
 
+        # Turn degrees into a property.
         if degrees is None: 
             self.degrees = 0
             self.orientation = math.pi
@@ -40,6 +48,8 @@ class Turtle(object):
         else:
             self.degrees = degrees
             self.orientation = math.pi - (degrees * math.pi / 180)
+
+        self.pen = True
 
 
     def copy(self):
@@ -55,36 +65,57 @@ class Turtle(object):
     def right(self, degrees):
         self.left(-degrees)
 
-    def forward(self, distance, draw=True):
+    def forward(self, distance):
         xd = math.cos(self.orientation) * distance
         yd = math.sin(self.orientation) * distance
-        x0, y0 = self.coordinates
+        x0, y0, _ = self.coordinates
         x1, y1 = x0 + xd, y0 + yd
-        self.coordinates = (x1, y1)
+        self.coordinates = (x1, y1, 0)
 
-        if draw:
-            self.draw_line((x0, y0), (x1, y1))
+        if self.pen:
+            self.draw_line((x0, y0, 0), (x1, y1, 0))
             #line(x0, y0, x1, y1)
 
-    
     def draw_line(self, p0, p1):
-        line(p0[0], p0[1], p1[0], p1[1])
+        #line(p0[0], p0[1], p1[0], p1[1])
+        raise
 
+    def up(self):
+        self.pen = False
+
+    def down(self):
+        self.pen = True
 
     def save(self):
         pass
 
 
-class SVGTurtle(Turtle):
+class RhinoTurtle(Turtle):
+    """
+    A Turtle that works with Rhino.
+    """
 
-    # A turtle that creates an svg. Currently only creates lines.
-    # Have to call save().
+    def __init__(self, coordinates=None, degrees=None):
+        super(RhinoTurtle, self).__init__()
+
+    def draw_line(self, p0, p1):
+        import rhinoscriptsyntax as rs
+        rs.AddLine(p0, p1)
+
+    
+
+
+class SVGTurtle(Turtle):
+    """
+    A turtle that creates an svg. Currently only creates lines.
+    Have to call save().
+    """
 
 
     def __init__(self, coordinates=None, degrees=None, fn=None, drawing=None):
         super(SVGTurtle, self).__init__()
         
-        assert fn or drawing
+        assert fn or drawing # file or drawing object
         #self.drawing = svgwrite.Drawing(fn, profile='tiny')
 
         if drawing:
@@ -114,6 +145,9 @@ class SVGTurtle(Turtle):
 # Alphabet processing functions.
 
 def process_levy_string(s, turtle):
+    """
+    Transform a levy string encoding into a drawing.
+    """
 
     distance = 30 * (1 / math.log(len(s), 2))
 
@@ -129,6 +163,9 @@ def process_levy_string(s, turtle):
 
 
 def process_cantor_string(s, a, b):
+    """
+    Transform cantor string encoding to form.
+    """
     distance = get_distance(a, b)
     step_length = len(s) / float(distance)
     lines = []
@@ -141,8 +178,8 @@ def process_cantor_string(s, a, b):
         draw_line(line)
 
 
-def process_koch_string(s, turtle, step=5):
-    for char in s:
+def process_koch_string(turtle, string, step=5):
+    for char in string:
         if char == 'l':
             turtle.left(60)
         elif char == 'r':
@@ -196,10 +233,21 @@ def draw():
     #t = SVGTurtle('sierpinski.svg')
 
 
-    #t.right(150)
-    #t.forward(300, draw=False)
-    #kc = koch_curve_string(steps=8)
-    #process_koch_string(kc, t, step=.02)
+
+    """
+    t.right(150)
+    t.up()
+    t.forward(300)
+    t.down()
+
+    """
+
+    t = RhinoTurtle()
+    #s = lsystem_string(koch_curve2(), 5)
+    s = lsystem_string(koch_curve2(), 5)
+    process_koch_string(t, s, step=1)
+
+    """
 
     #t.right(140)
     #t.forward(400, draw=False)
@@ -224,6 +272,7 @@ def draw():
     print s
     process_binary(s, t)
     t.save()
+
     
     #process_levy_string(s, t)
     #t.right(30)
@@ -233,6 +282,7 @@ def draw():
 
     #fn = "images/trees/%s.png" % str(random.random())[2:]
     #get().save(fn)
+    """
 
 #run()
 
