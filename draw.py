@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 import random
 import math
@@ -9,7 +8,9 @@ import math
 #from pyprocessing import *
 #import svgwrite
 
-from lsystem import ultra, generate_levy_c_curve_grammar, koch_curve2, sierpinski2, binary_tree
+from lsystem import generate_levy_c_curve_grammar, koch_curve2, sierpinski2, binary_tree, hilbert2, koch2
+
+from lsystem import lsx
 
 
 # Machinery for actually drawing images.
@@ -55,6 +56,7 @@ class Turtle(object):
     def copy(self):
         return Turtle(self.coordinates, self.degrees)
 
+    # pitch, yaw, roll
 
     def left(self, degrees):
         self.degrees += degrees
@@ -188,6 +190,17 @@ def process_koch_string(turtle, string, step=5):
             turtle.forward(step)
 
 
+def process_hilbert_curve(turtle, string, step=1):
+    for char in string:
+        if char == '-':
+            turtle.left(90)
+        elif char == '+':
+            turtle.right(90)
+        elif char == 'f':
+            turtle.forward(step)
+        
+
+
 def process_sierpinski_string(s, turtle, step=5):
     for char in s:
         if char == '+':
@@ -239,13 +252,10 @@ def draw():
     t.up()
     t.forward(300)
     t.down()
-
     """
 
-    t = RhinoTurtle()
-    #s = lsystem_string(koch_curve2(), 5)
-    s = lsystem_string(koch_curve2(), 5)
-    process_koch_string(t, s, step=1)
+    process_hilbert_curve(RhinoTurtle(), hilbert2.generate(7))
+    process_koch_string(RhinoTurtle(), koch2.generate(7))
 
     """
 

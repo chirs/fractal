@@ -6,7 +6,39 @@ import itertools
 # Working implementation Lindenmayer system fractals - generated using a rewriting system, which include
 # Levy C Curve, Koch Curve, Sierpinski Triangle, Cantos Dust; also model biological systems particularly well.
 
-def generic_lsystem(start, fn, ):
+
+class Lsystem(object):
+    def __init__(self, start, rules):
+        self.start = start
+        self.rules = rules
+
+    def rewrite(self, s):
+        s_ = ''
+        for char in s:
+            s_ += self.rules.get(char, char)
+        return s_
+
+
+    def generate(self, depth=1):
+        s = self.start
+        for e in range(depth):
+            #import pdb; pdb.set_trace()
+            s = self.rewrite(s)
+
+            
+        return s
+
+hilbert_mapping = {
+    'a': '-bf+afa+fb-',
+    'b': '+af-bfb-fa+',
+}
+
+hilbert2 = Lsystem('a', hilbert_mapping)
+
+koch2 = Lsystem('allalla', {'a': 'arallara'})
+            
+
+def generic_lsystem(start, fn):
     """
     Generate arbitrarily long l systems.
     """
@@ -16,20 +48,23 @@ def generic_lsystem(start, fn, ):
         s = fn(s)
 
 
-def lsystem_string(generator, depth):
-# def lsystem_string(generator, depth):
+def lsx(generator, depth):
     """
     Extract a string from lsystem generator.
     """
 
     for e in range(depth):
-        _ = generator.next()
-    return _
+        x = generator.next()
+    return x
 
 
 def koch_curve2():
     
     def step(s):
+        mapping = {
+            'a': 'arallara',
+            }
+        
         s2 = ''
         for c in s:
             if c == 'a':
@@ -40,6 +75,22 @@ def koch_curve2():
         return s2
 
     return generic_lsystem('allalla', step)
+
+
+def hilbert():
+    
+    def step(s):
+        mapping = {
+            'a': '-bf+afa+fb-',
+            'b': '+af-bfb-fa+',
+            }
+
+        s2 = ''
+        for c in s:
+            s2 += mapping.get(c, c)
+        return s2
+
+    return generic_lsystem('a', step)
 
 
 def sierpinski2():
@@ -57,55 +108,6 @@ def sierpinski2():
 
     return generic_lsystem('a', step)
 
-
-"""
-def koch_curve_string(steps=0):
-    # A standard triangular koch curve.
-
-    def step(s):
-        s2 = ''
-        for c in s:
-            if c == 'a':
-                s2 += 'arallara'
-            else:
-                s2 += c
-
-        return s2
-
-    s = 'allalla'
-    
-    i = 0
-    while True:
-        if i == steps:
-            return s
-
-        s = step(s)
-        i += 1
-
-def sierpinski_triangle_string(steps=0):
-    # Sierpinski Triangle
-    def step(s):
-        s2 = ''
-        for c in s:
-            if c == 'a':
-                s2 += 'b-a-b'
-            elif c == 'b':
-                s2 += 'a+b+a'
-            else:
-                s2 += c
-
-        return s2
-
-
-    s = 'a'
-    i = 0
-    while True:
-        if i == steps:
-            return s
-
-        s = step(s)
-        i += 1
-"""
 
 def binary_tree(steps=0):
     
@@ -154,8 +156,6 @@ def generate_levy_c_curve_grammar(steps=0):
         s = process_string(s)
 
     
-    
-
 def cantor_dust_string(steps=0):
 
     def dust_step(s):
@@ -181,6 +181,7 @@ def cantor_dust_string(steps=0):
 
 if __name__ == "__main__":
     #print(binary_tree(8))
-    print(lsystem_string(koch_curve2(), 5))
+    #print(lsx(koch_curve2(), 5))
+    print(hilbert2.generate(5))
         
     
