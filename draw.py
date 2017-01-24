@@ -8,9 +8,9 @@ import math
 #from pyprocessing import *
 #import svgwrite
 
-from lsystem import generate_levy_c_curve_grammar, koch_curve2, sierpinski2, binary_tree, hilbert2, koch2
+from lsystem import generate_levy_c_curve_grammar, lsx
 
-from lsystem import lsx
+from lsystem import hilbert, koch, sierpinski, binary, cantor, levy
 
 
 # Machinery for actually drawing images.
@@ -105,8 +105,6 @@ class RhinoTurtle(Turtle):
         rs.AddLine(p0, p1)
 
     
-
-
 class SVGTurtle(Turtle):
     """
     A turtle that creates an svg. Currently only creates lines.
@@ -146,14 +144,14 @@ class SVGTurtle(Turtle):
 
 # Alphabet processing functions.
 
-def process_levy_string(s, turtle):
+def process_levy(turtle, string):
     """
     Transform a levy string encoding into a drawing.
     """
 
-    distance = 30 * (1 / math.log(len(s), 2))
+    distance = 30 * (1 / math.log(len(string), 2))
 
-    for char in s:
+    for char in string:
         if char == '+': 
             turtle.right(45)
         elif char == '-':
@@ -164,7 +162,7 @@ def process_levy_string(s, turtle):
             import pdb; pdb.set_trace()
 
 
-def process_cantor_string(s, a, b):
+def process_cantor(s, a, b):
     """
     Transform cantor string encoding to form.
     """
@@ -180,7 +178,7 @@ def process_cantor_string(s, a, b):
         draw_line(line)
 
 
-def process_koch_string(turtle, string, step=5):
+def process_koch(turtle, string, step=5):
     for char in string:
         if char == 'l':
             turtle.left(60)
@@ -189,8 +187,8 @@ def process_koch_string(turtle, string, step=5):
         else:
             turtle.forward(step)
 
-
-def process_hilbert_curve(turtle, string, step=1):
+            
+def process_hilbert(turtle, string, step=1):
     for char in string:
         if char == '-':
             turtle.left(90)
@@ -200,9 +198,8 @@ def process_hilbert_curve(turtle, string, step=1):
             turtle.forward(step)
         
 
-
-def process_sierpinski_string(s, turtle, step=5):
-    for char in s:
+def process_sierpinski(turtle, string, step=5):
+    for char in string:
         if char == '+':
             turtle.left(60)
         elif char == '-':
@@ -211,10 +208,9 @@ def process_sierpinski_string(s, turtle, step=5):
             turtle.forward(step)
 
 
-
-def process_binary(s, turtle):
+def process_binary(turtle, string):
     turtles = [turtle]
-    for char in s: 
+    for char in string: 
         if char == '[':
             t = turtle.copy()
             turtles.append(t)
@@ -236,7 +232,18 @@ def process_binary(s, turtle):
                             
 
 
-def draw():
+def main():
+
+    turtle = RhinoTurtle()
+    #process_sierpinski(turtle, sierpinski.generate(7))
+
+
+
+    process_levy(turtle, levy.generate(13))    
+    process_koch(turtle, koch.generate(7))
+    process_hilbert(turtle, hilbert.generate(7))
+
+    
     #background(255)
     #draw_line(0, YSIZE/2)
     #px = sierpinski_number(9)
@@ -245,8 +252,6 @@ def draw():
 
     #t = SVGTurtle('sierpinski.svg')
 
-
-
     """
     t.right(150)
     t.up()
@@ -254,8 +259,6 @@ def draw():
     t.down()
     """
 
-    process_hilbert_curve(RhinoTurtle(), hilbert2.generate(7))
-    process_koch_string(RhinoTurtle(), koch2.generate(7))
 
     """
 
@@ -294,12 +297,10 @@ def draw():
     #get().save(fn)
     """
 
-#run()
-
 
 
 
 
 if __name__ == "__main__":
-    draw()
+    main()
 

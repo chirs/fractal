@@ -33,10 +33,43 @@ hilbert_mapping = {
     'b': '+af-bfb-fa+',
 }
 
-hilbert2 = Lsystem('a', hilbert_mapping)
+hilbert = Lsystem('a', hilbert_mapping)
 
-koch2 = Lsystem('allalla', {'a': 'arallara'})
-            
+koch = Lsystem('allalla', {'a': 'arallara'})
+
+
+
+sierpinski_mapping = {
+    'a': 'b-a-b',
+    'b': 'a+b+a',
+    }
+
+sierpinski = Lsystem('a', sierpinski_mapping)
+
+
+binary_mapping = {
+    '1': '11',
+    '0': '1[0]0',
+    }
+
+binary = Lsystem('0', binary_mapping)
+
+
+
+
+cantor_dust_mapping = {
+    'a': 'aba',
+    'b': 'bbb',
+    }
+
+cantor = Lsystem('a', cantor_dust_mapping)
+
+levy_mapping = { 'f': '+f--f+', }
+
+levy = Lsystem('f', levy_mapping)
+
+
+### Old code
 
 def generic_lsystem(start, fn):
     """
@@ -58,55 +91,6 @@ def lsx(generator, depth):
     return x
 
 
-def koch_curve2():
-    
-    def step(s):
-        mapping = {
-            'a': 'arallara',
-            }
-        
-        s2 = ''
-        for c in s:
-            if c == 'a':
-                s2 += 'arallara'
-            else:
-                s2 += c
-
-        return s2
-
-    return generic_lsystem('allalla', step)
-
-
-def hilbert():
-    
-    def step(s):
-        mapping = {
-            'a': '-bf+afa+fb-',
-            'b': '+af-bfb-fa+',
-            }
-
-        s2 = ''
-        for c in s:
-            s2 += mapping.get(c, c)
-        return s2
-
-    return generic_lsystem('a', step)
-
-
-def sierpinski2():
-    def step(s):
-        s2 = ''
-        for c in s:
-            if c == 'a':
-                s2 += 'b-a-b'
-            elif c == 'b':
-                s2 += 'a+b+a'
-            else:
-                s2 += c
-
-        return s2
-
-    return generic_lsystem('a', step)
 
 
 def binary_tree(steps=0):
@@ -131,7 +115,10 @@ def binary_tree(steps=0):
         
         i += 1
         s = process_string(s)
-                
+
+
+        
+
 
 
 def generate_levy_c_curve_grammar(steps=0):
@@ -154,6 +141,8 @@ def generate_levy_c_curve_grammar(steps=0):
         
         i += 1
         s = process_string(s)
+
+
 
     
 def cantor_dust_string(steps=0):
@@ -182,6 +171,13 @@ def cantor_dust_string(steps=0):
 if __name__ == "__main__":
     #print(binary_tree(8))
     #print(lsx(koch_curve2(), 5))
-    print(hilbert2.generate(5))
-        
-    
+    #print(hilbert2.generate(5))
+
+    print(levy_mapping)
+
+    print('\n1: ' + levy.generate(1))
+    print('\n4: ' + levy.generate(4))              
+    print('\n7: ' + levy.generate(7))
+    print('\n10: ' + levy.generate(10))            
+
+    #print(levy.generate(13))
