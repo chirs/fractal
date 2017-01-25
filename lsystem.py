@@ -37,6 +37,13 @@ hilbert = Lsystem('a', hilbert_mapping)
 
 koch = Lsystem('allalla', {'a': 'arallara'})
 
+plant_rules = {
+    'x': 'f-[[x]+x]+f[+fx]-x',
+    'f': 'ff',
+    }
+
+plant = Lsystem('x', plant_rules)
+
 
 
 sierpinski_mapping = {
@@ -176,6 +183,7 @@ if __name__ == "__main__":
     print(levy_mapping)
 
     print('\n1: ' + levy.generate(1))
+    print('\n1: ' + levy.generate(2))
     print('\n4: ' + levy.generate(4))              
     print('\n7: ' + levy.generate(7))
     print('\n10: ' + levy.generate(10))            
