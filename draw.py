@@ -90,6 +90,94 @@ class RhinoTurtle(Turtle):
         return RhinoTurtle(self.coordinates, self.degrees)
 
 
+class Turtle3d(object):
+
+    def __init__(self, position=None, orientation=None):
+        
+        if position is None:
+            position = (0, 0, 0)
+
+
+
+        # Heading, left, up.
+        if orientation is None:
+            orientation = [
+                (1, 0, 0),
+                (0, 1, 0),
+                (0, 0, 1)
+                ]
+
+        self.position = position
+        self.orientation = orientation
+
+    def draw_line(self, p0, p1):
+        import rhinoscriptsyntax as rs
+        rs.AddLine(p0, p1)
+
+
+    
+    # Orientation vectors
+    def orientation_vector(self, index, value=None):
+        if value is not None:
+            self.orientation[index] = value
+            return None
+        else:
+            return self.orientation[index]
+
+    def heading(self, value=None):
+        return self.orientation_vector(0, value)
+
+    def left(self, value=None):
+        return self.orientation_vector(1, value)
+
+    def up(self, value=None):
+        return self.orientation_vector(2, value)
+
+
+    def forward(self, distance):
+
+        hv = [distance * s for s in  self.heading()]
+
+        p0 = self.position
+        self.position = [a + b for (a, b) in zip(hv, p0)]
+
+        if True:
+            self.draw_line(p0, self.position)
+
+    def yaw(self, radians):
+        h_ = self.heading()
+        nh_ = [-1 * e for e in h_]
+        l_ = self.left()
+        self.left(rotate(l_, nh_, radians))
+        self.heading(rotate(h_, l_, radians))
+
+    def pitch(self, radians):
+        h_ = self.heading()
+        nh_ = [-1 * e for e in h_]
+        u_ = self.up()
+        self.up(rotate(u_, nh_, radians))
+        self.heading(rotate(h_, u_, radians))
+
+    def roll(self, radians):
+        l_ = self.left()
+        nl_ = [1 * e for e in l_]
+        u_ = self.up()
+        self.up(rotate(u_, nl_, radians))
+        self.left(rotate(l_, u_, radians))
+
+
+def rotate(v1, v2, radians):
+    """
+    rotate around perpindicular vectors v1 and v2
+    """
+    # how to ensure v1 and v2 are perpindicular?
+    # (are any two vectors by their nature perpindicular? (no??)
+    # seriously? This is all? Let's see.
+    return [math.cos(radians) * s1 + math.sin(radians) * s2 for (s1, s2) in zip(v1, v2)]
+
+    
+    
+    
 # Alphabet processing functions.
 
 def process_levy(turtle, string):
@@ -209,9 +297,12 @@ def process_plant(turtle, string):
 
 
 def main():
-    turtle = RhinoTurtle()
 
-    process_plant(turtle, plant.generate(7))
+    test_turtle3d()
+    
+    #turtle = RhinoTurtle()
+
+    #process_plant(turtle, plant.generate(7))
 
     #process_sierpinski(turtle, sierpinski.generate(7))
     #process_levy(turtle, levy.generate(13))    
@@ -221,6 +312,15 @@ def main():
 
 
 
+def test_turtle3d():
+    t = Turtle3d()
+    t.forward(10)
+    t.pitch(.25 * math.pi)
+    t.forward(10)
+    t.roll(math.pi)
+    t.forward(10)
+    t.pitch(.25 * math.pi)
+    t.forward(10)
 
 
 if __name__ == "__main__":
