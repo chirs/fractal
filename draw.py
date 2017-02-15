@@ -301,7 +301,7 @@ def draw_generic(turtle, mapping, string):
     return turtle
 
 
-def draw_stochastic(s):
+def draw_stochastic1(s):
 
     return draw_generic(RhinoTurtle(), {
         'a': lambda t: t.forward(10),
@@ -309,8 +309,16 @@ def draw_stochastic(s):
         'c': lambda t: t.left(90),        
          }, s)
     
+
+
+def draw_stochastic2(s):
+
+    return draw_generic(RhinoTurtle(), {
+        'a': lambda t: t.forward(random.uniform(10,20)),
+        'b': lambda t: t.right(random.uniform(0, 90)),
+        'c': lambda t: t.left(random.uniform(0, 90)),        
+         }, s)
     
-                            
 
 
 def process_plant(turtle, string):
@@ -362,8 +370,8 @@ def main():
 
     #process_sl(turtle, sl.generate(12))
 
-    draw_stochastic(stoch1.generate(9))
-
+    draw_stochastic1(stoch1.generate(10))    
+    draw_stochastic2(stoch1.generate(10))
 
     #process_plant(turtle, plant.generate(7))
 
