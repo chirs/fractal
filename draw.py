@@ -2,9 +2,7 @@
 import random
 import math
 
-from lsystem import generate_levy_c_curve_grammar, lsx
-
-from lsystem import hilbert, koch, sierpinski, binary, cantor, levy, plant
+from lsystem import hilbert, koch, sierpinski, binary, cantor, levy, plant, stoch1
 
 
 class Turtle(object):
@@ -97,8 +95,6 @@ class Turtle3d(object):
         if position is None:
             position = (0, 0, 0)
 
-
-
         # Heading, left, up.
         if orientation is None:
             orientation = [
@@ -110,12 +106,7 @@ class Turtle3d(object):
         self.position = position
         self.orientation = orientation
 
-    def draw_line(self, p0, p1):
-        import rhinoscriptsyntax as rs
-        rs.AddLine(p0, p1)
 
-
-    
     # Orientation vectors
     def orientation_vector(self, index, value=None):
         if value is not None:
@@ -132,17 +123,6 @@ class Turtle3d(object):
 
     def up(self, value=None):
         return self.orientation_vector(2, value)
-
-
-    def forward(self, distance):
-
-        hv = [distance * s for s in  self.heading()]
-
-        p0 = self.position
-        self.position = [a + b for (a, b) in zip(hv, p0)]
-
-        if True:
-            self.draw_line(p0, self.position)
 
     def yaw(self, radians):
         h_ = self.heading()
@@ -166,10 +146,30 @@ class Turtle3d(object):
         self.left(rotate(l_, u_, radians))
 
 
+    def draw_line(self, p0, p1):
+        import rhinoscriptsyntax as rs
+        rs.AddLine(p0, p1)
+    
+
+    def forward(self, distance):
+
+        hv = [distance * s for s in  self.heading()]
+
+        p0 = self.position
+        self.position = [a + b for (a, b) in zip(hv, p0)]
+
+        if True:
+            self.draw_line(p0, self.position)
+        
+
+
 def rotate(v1, v2, radians):
     """
     rotate around perpindicular vectors v1 and v2
     """
+    # assert dot_product(v1, v2) == 0
+
+    
     # how to ensure v1 and v2 are perpindicular?
     # (are any two vectors by their nature perpindicular? (no??)
     # seriously? This is all? Let's see.
@@ -244,8 +244,6 @@ def process_sierpinski(turtle, string, step=5):
             turtle.forward(step)
 
 
-
-
 def process_binary(turtle, string):
     turtles = [turtle]
 
@@ -268,6 +266,50 @@ def process_binary(turtle, string):
 
         else:
             import pdb; pdb.set_trace()
+
+
+def draw_hilbert3d(string):
+
+    return draw_generic(Turtle3d(), {
+        '&': lambda t: t.forward(10),
+         '+': lambda t: t.right(45),
+         '-': lambda t: t.left(45),
+         '.': lambda t: t.yaw(45),
+         'A': lambda t: t.yaw(45),
+         'B': lambda t: t.yaw(45),
+         'C': lambda t: t.yaw(45),
+         'D': lambda t: t.yaw(45),
+         'F': lambda t: t.yaw(45),
+         '|': lambda t: t.yaw(45),
+         })
+
+
+def draw_generic(turtle, mapping, string):
+
+
+    funcs = [mapping[char] for char in string if char in mapping]
+    for f in funcs:
+        f(turtle)
+        
+    """
+    for char in string:
+        if char in mapping:
+            func = mapping[char]
+            func(turtle)
+    """
+
+    return turtle
+
+
+def draw_stochastic(s):
+
+    return draw_generic(RhinoTurtle(), {
+        'a': lambda t: t.forward(10),
+        'b': lambda t: t.right(90),
+        'c': lambda t: t.left(90),        
+         }, s)
+    
+    
                             
 
 
@@ -294,13 +336,34 @@ def process_plant(turtle, string):
             pass
             
 
+def process_sl(turtle, string):
+
+    for char in string:
+        if char == 'a':
+            turtle.forward(10)
+        elif char == '+':
+            turtle.left(60)
+        elif char == '-':
+            turtle.right(60)
+        else:
+            pass
+
+
+
+
+
 
 
 def main():
 
-    test_turtle3d()
+    #test_turtle3d()
     
     #turtle = RhinoTurtle()
+
+    #process_sl(turtle, sl.generate(12))
+
+    draw_stochastic(stoch1.generate(9))
+
 
     #process_plant(turtle, plant.generate(7))
 
@@ -313,6 +376,7 @@ def main():
 
 
 def test_turtle3d():
+
     t = Turtle3d()
     t.forward(10)
     t.pitch(.25 * math.pi)
@@ -320,6 +384,8 @@ def test_turtle3d():
     t.roll(math.pi)
     t.forward(10)
     t.pitch(.25 * math.pi)
+    t.forward(10)
+    t.yaw(.55 * math.pi)
     t.forward(10)
 
 
